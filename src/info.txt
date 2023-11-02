@@ -1,0 +1,2 @@
+starta: npx expo start
+öppna mappen i mobilen för att kolla hur det ser ut
