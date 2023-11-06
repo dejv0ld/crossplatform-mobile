@@ -3,7 +3,7 @@ import { useGetUsersQuery } from '../../store/api/usersApi';
 import { ListItem } from '@rneui/themed';
 import { Button } from '@rneui/base';
 
-const UserList = () => {
+const UserList = ({ navigation }) => {
   const { data, isLoading, refetch } = useGetUsersQuery({});
 
   const handleRefetch = () => {
@@ -20,10 +20,15 @@ const UserList = () => {
           <Text>Loading...</Text>
         ) : (
           <View>
-            {data?.map((user) => (
-              <ListItem>
+            {data?.map((item) => (
+              <ListItem
+                key={item.id}
+                onPress={() => {
+                  navigation.navigate('UserInfo', { user: item });
+                }}
+              >
                 <ListItem.Content>
-                  <ListItem.Title>{`${user.firstName} ${user.lastName}`}</ListItem.Title>
+                  <ListItem.Title>{`${item.firstName} ${item.lastName}`}</ListItem.Title>
                 </ListItem.Content>
               </ListItem>
             ))}

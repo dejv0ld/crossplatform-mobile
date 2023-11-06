@@ -1,15 +1,16 @@
 import * as React from 'react';
-import { StatusBar } from 'expo-status-bar';
+
 import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Button } from '@rneui/base';
+
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import UserList from './src/screens/UserList/UserList';
-import { Provider } from 'react-redux';
+import { Provider, useSelector } from 'react-redux';
 import { store } from './src/store/store';
 import { UserForm } from './src/screens/UserForm/UserForm';
 import { ToastProvider } from 'react-native-toast-notifications';
+import { UserInfo } from './src/screens/UserInfo/UserInfo';
 /* function HomeScreen({ navigation }) { //navigation prop is passed automatically
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -48,18 +49,47 @@ export default function App() {
 } */
 
 //TAB NAVIGATION BELOW
+const UserListStack = createNativeStackNavigator();
+const UserListStackScreen = () => {
+  return (
+    <UserListStack.Navigator>
+      <UserListStack.Screen name="UserList" component={UserList} />
+      <UserListStack.Screen name="UserInfo" component={UserInfo} />
+    </UserListStack.Navigator>
+  );
+};
+const NavgationWrapper = () => {
+  const loggedInAs = useSelector((state: any) => state.auth.loggedInAs);
+  return (
+    <NavigationContainer>
+      <Tab.Navigator screenOptions={{ headerShown: false }}>
+        <Tab.Screen name="UserListStack" component={UserListStackScreen} />
+        <Tab.Screen
+          name="UserForm"
+          component={UserForm}
+          options={{ headerShown: true }}
+        />
+        {loggedInAs && (
+          <Tab.Screen
+            name="UserInfo"
+            component={UserInfo}
+            options={{
+              title: `${loggedInAs.firstName} ${loggedInAs.firstName}`
+            }}
+          />
+        )}
+      </Tab.Navigator>
+    </NavigationContainer>
+  );
+};
+
 const Tab = createBottomTabNavigator();
 
 export default function App() {
   return (
     <ToastProvider>
       <Provider store={store}>
-        <NavigationContainer>
-          <Tab.Navigator>
-            <Tab.Screen name="UserList" component={UserList} />
-            <Tab.Screen name="UserForm" component={UserForm} />
-          </Tab.Navigator>
-        </NavigationContainer>
+        <NavgationWrapper></NavgationWrapper>
       </Provider>
     </ToastProvider>
   );

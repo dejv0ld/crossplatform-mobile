@@ -1,7 +1,13 @@
-import { Text, View, StyleSheet } from 'react-native';
+import {
+  Text,
+  View,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  Keyboard
+} from 'react-native';
 import { Input, Button } from '@rneui/base';
 import { useCreateUserMutation } from '../../store/api/usersApi';
-import React from 'react';
+import React, { useRef } from 'react';
 import { useToast } from 'react-native-toast-notifications';
 
 export const UserForm = (props) => {
@@ -12,6 +18,7 @@ export const UserForm = (props) => {
   const [statusMessage, setStatusMessage] = React.useState('');
   const [showStatus, setShowStatus] = React.useState(true);
   const toast = useToast();
+  const lastNameRef = useRef(null);
 
   const handleSubmit = async () => {
     try {
@@ -53,35 +60,50 @@ export const UserForm = (props) => {
   };
 
   return (
-    <View style={styles.parentContainer}>
-      <View style={styles.container}>
-        <Text>UserForm</Text>
-        <Input
-          placeholder="First Name"
-          value={firstName}
-          onChangeText={(text) => setFirstName(text)}
-        ></Input>
-        <Input
-          placeholder="Last Name"
-          value={lastName}
-          onChangeText={(text) => setLastName(text)}
-        ></Input>
-        <Button title="Create User" onPress={() => handleSubmit()}>
-          Submit
-        </Button>
-        {showStatus && statusMessage && (
-          <Text
-            style={
-              statusMessage === 'User created successfully!'
-                ? styles.successMessage
-                : styles.errorMessage
-            }
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <View style={styles.parentContainer}>
+        <View style={styles.container}>
+          <Text>UserForm</Text>
+          <Input
+            returnKeyType="next"
+            onSubmitEditing={() => lastNameRef.current.focus()}
+            blurOnSubmit={false}
+            placeholder="First Name"
+            value={firstName}
+            disabled={isLoading}
+            onChangeText={(text) => setFirstName(text)}
+          ></Input>
+          <Input
+            returnKeyType="send"
+            onSubmitEditing={() => handleSubmit()}
+            ref={lastNameRef}
+            placeholder="Last Name"
+            disabled={isLoading}
+            value={lastName}
+            onChangeText={(text) => setLastName(text)}
+          ></Input>
+          <Button
+          disabled={isLoading}
+            loading={isLoading}
+            title="Create User"
+            onPress={() => handleSubmit()}
           >
-            {statusMessage}
-          </Text>
-        )}
+            Submit
+          </Button>
+          {showStatus && statusMessage && (
+            <Text
+              style={
+                statusMessage === 'User created successfully!'
+                  ? styles.successMessage
+                  : styles.errorMessage
+              }
+            >
+              {statusMessage}
+            </Text>
+          )}
+        </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 
