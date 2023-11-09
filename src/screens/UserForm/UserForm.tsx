@@ -7,22 +7,53 @@ import {
 } from 'react-native';
 import { Input, Button } from '@rneui/base';
 import { useCreateUserMutation } from '../../store/api/usersApi';
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { useToast } from 'react-native-toast-notifications';
 import { useUpdateUserMutation } from '../../store/api/usersApi';
 
 export const UserForm = ({ route, navigation }) => {
   const [createUser, { isLoading, isError, error }] = useCreateUserMutation();
-  const [firstName, setFirstName] = React.useState('');
-  const [lastName, setLastName] = React.useState('');
-  const [statusMessage, setStatusMessage] = React.useState('');
-  const [showStatus, setShowStatus] = React.useState(true);
+  const [updateUser, { isLoading: isUpdating }] = useUpdateUserMutation();
+  const [firstName, setFirstName] = useState(
+    route?.params?.user?.firstName || ''
+  );
+  const [lastName, setLastName] = useState(route?.params?.user?.lastName || '');
+  const [statusMessage, setStatusMessage] = useState('');
+  const [showStatus, setShowStatus] = useState(true);
   const toast = useToast();
   const lastNameRef = useRef(null);
 
   const handleSubmit = async () => {
+    Keyboard.dismiss(); // Dismiss the keyboard
+
+    if (!firstName || !lastName) {
+      toast.show('Please fill in both fields!', {
+        type: 'warning',
+        placement: 'top',
+        duration: 3000,
+        animationType: 'slide-in'
+      });
+      return;
+    }
+
+    // Check if we're updating an existing user or creating a new one
+    const isUpdatingUser = route?.params?.user;
+
     try {
-      if (firstName && lastName) {
+      if (isUpdatingUser) {
+        // If updating, call the updateUser mutation
+        await updateUser({
+          userId: route?.params?.user?.id,
+          user: { firstName, lastName }
+        });
+        toast.show('User updated successfully!', {
+          type: 'success',
+          placement: 'top',
+          duration: 3000,
+          animationType: 'slide-in'
+        });
+      } else {
+        // If creating, call the createUser mutation
         await createUser({ user: { firstName, lastName } });
         toast.show('User created successfully!', {
           type: 'success',
@@ -30,27 +61,14 @@ export const UserForm = ({ route, navigation }) => {
           duration: 3000,
           animationType: 'slide-in'
         });
-        setStatusMessage('User created successfully!');
-        setFirstName('');
-        setLastName('');
-        navigation.navigate('UserList');
-      } else {
-        setStatusMessage('Please fill in both fields!');
-        toast.show('Please fill in both fields!', {
-          type: 'warning',
-          placement: 'top',
-          duration: 3000,
-          animationType: 'slide-in'
-        });
       }
-      setShowStatus(true); // Make sure the message is visible
-      setTimeout(() => {
-        setShowStatus(false); // Hide the message after 3 seconds
-      }, 3000);
-    } catch (err) {
-      console.log('There was an error posting the user data: ', err);
-      setStatusMessage('Error creating user!');
-      toast.show('Error creating user!', {
+      // Reset form and navigate back
+      setFirstName('');
+      setLastName('');
+      navigation.navigate('UserList');
+    } catch (error) {
+      console.error('There was an error posting the user data: ', error);
+      toast.show(`Error ${isUpdatingUser ? 'updating' : 'creating'} user!`, {
         type: 'error',
         placement: 'top',
         duration: 3000,
