@@ -9,9 +9,9 @@ import { Input, Button } from '@rneui/base';
 import { useCreateUserMutation } from '../../store/api/usersApi';
 import React, { useRef } from 'react';
 import { useToast } from 'react-native-toast-notifications';
+import { useUpdateUserMutation } from '../../store/api/usersApi';
 
-export const UserForm = (props) => {
-  const { navigation } = props;
+export const UserForm = ({ route, navigation }) => {
   const [createUser, { isLoading, isError, error }] = useCreateUserMutation();
   const [firstName, setFirstName] = React.useState('');
   const [lastName, setLastName] = React.useState('');
@@ -83,7 +83,7 @@ export const UserForm = (props) => {
             onChangeText={(text) => setLastName(text)}
           ></Input>
           <Button
-          disabled={isLoading}
+            disabled={isLoading}
             loading={isLoading}
             title="Create User"
             onPress={() => handleSubmit()}

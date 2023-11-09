@@ -1,7 +1,8 @@
-import { Text, View, ScrollView } from 'react-native';
+import { Text, View, ScrollView, RefreshControl } from 'react-native';
 import { useGetUsersQuery } from '../../store/api/usersApi';
 import { ListItem } from '@rneui/themed';
 import { Button } from '@rneui/base';
+import { styles } from './userlistStyles';
 
 const UserList = ({ navigation }) => {
   const { data, isLoading, refetch } = useGetUsersQuery({});
@@ -14,7 +15,12 @@ const UserList = ({ navigation }) => {
 
   console.log('data: ', data);
   return (
-    <ScrollView style={{ flex: 1 }}>
+    <ScrollView
+      style={{ flex: 1 }}
+      refreshControl={
+        <RefreshControl refreshing={isLoading} onRefresh={handleRefetch} />
+      }
+    >
       <View>
         {isLoading ? (
           <Text>Loading...</Text>
@@ -27,8 +33,16 @@ const UserList = ({ navigation }) => {
                   navigation.navigate('UserInfo', { user: item });
                 }}
               >
-                <ListItem.Content>
-                  <ListItem.Title>{`${item.firstName} ${item.lastName}`}</ListItem.Title>
+                <ListItem.Content style={styles.container}>
+                  <ListItem.Title style={styles.itemName}>
+                    {`${item.firstName} ${item.lastName}`}
+                    <Button
+                      title="Edit User"
+                      onPress={() => navigation.navigate('UserForm', {user: item})}
+                    >
+                      Edit
+                    </Button>
+                  </ListItem.Title>
                 </ListItem.Content>
               </ListItem>
             ))}

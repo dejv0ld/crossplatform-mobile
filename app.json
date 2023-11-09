@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "crossplatform-mobile",
-    "slug": "crossplatform-mobile",
+    "name": "Twitterias",
+    "slug": "Twitterias",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -21,10 +21,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.dejv0ld.Twitterias"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "b7480423-0329-4e72-a80a-9c79d654f437"
+      }
     }
   }
 }

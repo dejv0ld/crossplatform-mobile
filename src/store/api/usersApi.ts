@@ -1,6 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { db } from '../../../firebase-config';
-import { addDoc, collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
+import { addDoc, collection, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 
 
 const firebaseBaseQuery = async ({ baseUrl, url, method, body }) => {
@@ -14,13 +14,17 @@ const firebaseBaseQuery = async ({ baseUrl, url, method, body }) => {
       const docRef = await addDoc(collection(db, url), body);
       return { data: { id: docRef.id, ...body } };
 
-    default:
-      throw new Error(`Unhandled method ${method}`);
-
     case 'DELETE':
       const deleteRef = doc(db, url);
       await deleteDoc(deleteRef);
       return { data: 'Deleted successfully' };
+
+    case 'PUT':
+      await updateDoc(doc(db, url, body.id), body);
+      return { data: { ...body } };
+
+    default:
+      throw new Error(`Unhandled method ${method}`);
   }
 
 };
@@ -56,6 +60,16 @@ export const usersApi = createApi({
         method: 'DELETE',
         body: ''
       }),
+    }),
+    // För att uppdatera en user. Anropas såhär updateUser({ user: { id: user.id, firstName: firstName, lastName: lastName }})
+    updateUser: builder.mutation({
+      query: ({ user }) => ({
+        baseUrl: '',
+        url: 'users',
+        method: 'PUT',
+        body: user
+      }),
+      invalidatesTags: ['users']
     }),
   }),
 });
