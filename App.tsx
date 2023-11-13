@@ -7,10 +7,11 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import UserList from './src/screens/UserList/UserList';
 import { Provider, useSelector } from 'react-redux';
-import { store } from './src/store/store';
+import { persistor, store } from './src/store/store';
 import { UserForm } from './src/screens/UserForm/UserForm';
 import { ToastProvider } from 'react-native-toast-notifications';
 import { UserInfo } from './src/screens/UserInfo/UserInfo';
+import { PersistGate } from 'redux-persist/integration/react';
 /* function HomeScreen({ navigation }) { //navigation prop is passed automatically
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -90,7 +91,9 @@ export default function App() {
   return (
     <ToastProvider>
       <Provider store={store}>
-        <NavgationWrapper></NavgationWrapper>
+        <PersistGate loading={null} persistor={persistor}>
+          <NavgationWrapper></NavgationWrapper>
+        </PersistGate>
       </Provider>
     </ToastProvider>
   );
