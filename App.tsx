@@ -12,6 +12,7 @@ import { UserForm } from './src/screens/UserForm/UserForm';
 import { ToastProvider } from 'react-native-toast-notifications';
 import { UserInfo } from './src/screens/UserInfo/UserInfo';
 import { PersistGate } from 'redux-persist/integration/react';
+import { PostForm } from './src/screens/PostForm/PostForm';
 /* function HomeScreen({ navigation }) { //navigation prop is passed automatically
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -80,6 +81,11 @@ const NavgationWrapper = () => {
             }}
           />
         )}
+        <Tab.Screen
+          name="PostForm"
+          component={PostForm}
+          options={{ headerShown: true }}
+        />
       </Tab.Navigator>
     </NavigationContainer>
   );

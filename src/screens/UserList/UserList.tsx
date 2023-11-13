@@ -6,17 +6,31 @@ import {
 import { ListItem } from '@rneui/themed';
 import { Button } from '@rneui/base';
 import { styles } from './userlistStyles';
+import { useToast } from 'react-native-toast-notifications';
 
 const UserList = ({ navigation }) => {
   const { data, isLoading, refetch } = useGetUsersQuery({});
   const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation();
+  const toast = useToast();
 
   const handleDelete = async (userId) => {
     try {
       await deleteUser(userId);
       refetch();
+      toast.show('User deleted successfully.', {
+        type: 'success',
+        placement: 'top',
+        duration: 3000,
+        animationType: 'zoom-in'
+      });
     } catch (error) {
       console.error(error);
+      toast.show('Error deleting user', {
+        type: 'danger',
+        placement: 'top',
+        duration: 3000,
+        animationType: 'slide-in'
+      });
     }
   };
 
