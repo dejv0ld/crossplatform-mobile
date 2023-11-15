@@ -32,7 +32,8 @@ import { usersApi } from "./api/usersApi";
 import authSlice from "./slices/authSlice";
 import { postsApi } from "./api/postsApi";
 
-const middlewares = [usersApi.middleware];
+const middlewares = [usersApi.middleware, postsApi.middleware];
+
 
 if (process.env.NODE_ENV === `development`) {
   const { logger } = require(`redux-logger`);

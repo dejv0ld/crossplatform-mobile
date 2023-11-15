@@ -13,42 +13,7 @@ import { ToastProvider } from 'react-native-toast-notifications';
 import { UserInfo } from './src/screens/UserInfo/UserInfo';
 import { PersistGate } from 'redux-persist/integration/react';
 import { PostForm } from './src/screens/PostForm/PostForm';
-/* function HomeScreen({ navigation }) { //navigation prop is passed automatically
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Home Screen</Text>
-      <Button
-        title="Go to Details"
-        onPress={() => navigation.navigate('Details')}
-      ></Button>
-    </View>
-  );
-}
-
-function DetailsScreen() {
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Details Screen</Text>
-    </View>
-  );
-} */
-
-/* const Stack = createNativeStackNavigator();
-
-export default function App() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
-          name="Home"
-          component={HomeScreen}
-          options={{ title: 'Overview' }}
-        />
-        <Stack.Screen name="Details" component={DetailsScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
-} */
+import { PostList } from './src/screens/PostList/PostList';
 
 //TAB NAVIGATION BELOW
 const UserListStack = createNativeStackNavigator();
@@ -84,6 +49,11 @@ const NavgationWrapper = () => {
         <Tab.Screen
           name="PostForm"
           component={PostForm}
+          options={{ headerShown: true }}
+        />
+        <Tab.Screen
+          name="PostList"
+          component={PostList}
           options={{ headerShown: true }}
         />
       </Tab.Navigator>
