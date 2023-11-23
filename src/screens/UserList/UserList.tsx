@@ -7,11 +7,22 @@ import { ListItem } from '@rneui/themed';
 import { Button } from '@rneui/base';
 import { styles } from './userlistStyles';
 import { useToast } from 'react-native-toast-notifications';
+import {useMemo} from 'react';
 
 const UserList = ({ navigation }) => {
   const { data, isLoading, refetch } = useGetUsersQuery({});
   const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation();
   const toast = useToast();
+
+  const sortedUsers = useMemo(() => {
+    if (!data) return [];
+
+    return [...data].sort((a, b) => {
+      const nameA = `${a.firstName} ${a.lastName}`.toLowerCase();
+      const nameB = `${b.firstName} ${b.lastName}`.toLowerCase();
+      return nameA.localeCompare(nameB);
+    });
+  }, [data]);
 
   const handleDelete = async (userId) => {
     try {
@@ -54,7 +65,7 @@ const UserList = ({ navigation }) => {
           <Text>Loading...</Text>
         ) : (
           <View>
-            {data?.map((item) => (
+            {sortedUsers.map((item) => (
               <ListItem
                 key={item.id}
                 onPress={() => {
